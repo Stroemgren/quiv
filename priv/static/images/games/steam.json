@@ -1,0 +1,187 @@
+{
+  "civ7": {
+    "appid": 1295660,
+    "name": "Sid Meier's Civilization VII",
+    "fetched": "2026-10-30",
+    "files": {
+      "icon.png": {
+        "source": "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/1295660/caf850b14064a89962c6309f7685264cfc721c9e.ico",
+        "bytes": 13152,
+        "size": "184x184"
+      },
+      "logo.png": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1295660/f48b563972469c31a752d73075714b1cf4855926/logo.png",
+        "bytes": 37126,
+        "size": "640x360"
+      },
+      "header.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1295660/header.jpg",
+        "bytes": 29368,
+        "size": "460x215"
+      },
+      "capsule-small.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1295660/56f256d5776521616d8842cd435f97b22de655cd/capsule_231x87.jpg",
+        "bytes": 6255,
+        "size": "231x87"
+      },
+      "capsule.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1295660/library_600x900_2x.jpg",
+        "bytes": 161972,
+        "size": "600x900"
+      },
+      "hero.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1295660/c83319eae3d37b6d0203727b1f71187c9e567211/library_hero.jpg",
+        "bytes": 257288,
+        "size": "1920x620"
+      }
+    }
+  },
+  "eu4": {
+    "appid": 236850,
+    "name": "Europa Universalis IV",
+    "fetched": "2026-10-30",
+    "files": {
+      "icon.png": {
+        "source": "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/236850/aa46f5bf2697ce607ae95ec1be2bef119b63d0e6.ico",
+        "bytes": 108667,
+        "size": "256x256"
+      },
+      "logo.png": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/236850/logo.png",
+        "bytes": 130633,
+        "size": "640x360"
+      },
+      "header.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/236850/header.jpg",
+        "bytes": 45944,
+        "size": "460x215"
+      },
+      "capsule-small.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/236850/f4e714d0f5a6be6b76e4b7cfddd692ccc689884a/capsule_231x87.jpg",
+        "bytes": 11650,
+        "size": "231x87"
+      },
+      "capsule.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/236850/262929c03990b786390232599f3af566ae36eac7/library_600x900_2x.jpg",
+        "bytes": 170695,
+        "size": "600x900"
+      },
+      "hero.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/236850/e9ca126009c5fecf7df6e2782c69a4d3336fcc32/library_hero.jpg",
+        "bytes": 278972,
+        "size": "1920x620"
+      }
+    }
+  },
+  "eu5": {
+    "appid": 3450310,
+    "name": "Europa Universalis V",
+    "fetched": "2026-10-30",
+    "files": {
+      "icon.png": {
+        "source": "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/3450310/9892e9cfeb0e3c4693069bfabfd10b5a59f38e3a.ico",
+        "bytes": 97948,
+        "size": "256x256"
+      },
+      "logo.png": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3450310/84c89c63f936f332bf257179b56cc160a692a776/logo.png",
+        "bytes": 241100,
+        "size": "640x360"
+      },
+      "header.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3450310/9944293cf93d5c11430d3b69941221b614c3ea70/header.jpg",
+        "bytes": 56813,
+        "size": "460x215"
+      },
+      "capsule-small.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3450310/b38d9e6151305e42163707ded29f2e6fb0d81f52/capsule_231x87.jpg",
+        "bytes": 12840,
+        "size": "231x87"
+      },
+      "capsule.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3450310/478711aff6212e85a15c2228d14710f129946363/library_600x900_2x.jpg",
+        "bytes": 217865,
+        "size": "600x900"
+      },
+      "hero.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/3450310/d19f00e626bcf8332623767a3c288b0e8bfd534e/library_hero.jpg",
+        "bytes": 245266,
+        "size": "1920x620"
+      }
+    }
+  },
+  "hoi4": {
+    "appid": 394360,
+    "name": "Hearts of Iron IV",
+    "fetched": "2026-10-30",
+    "files": {
+      "icon.png": {
+        "source": "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/394360/1a13011c8363b5160781d9bb16bcb392b07b69be.ico",
+        "bytes": 118696,
+        "size": "256x256"
+      },
+      "logo.png": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/394360/logo.png",
+        "bytes": 41175,
+        "size": "640x360"
+      },
+      "header.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/394360/67bbd0057627fc2244793bcdd09260c2539499cf/header.jpg",
+        "bytes": 46286,
+        "size": "460x215"
+      },
+      "capsule-small.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/394360/08a0a8f6c28071017611aa39b835c193a27f2518/capsule_231x87.jpg",
+        "bytes": 12908,
+        "size": "231x87"
+      },
+      "capsule.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/394360/library_600x900_2x.jpg",
+        "bytes": 159980,
+        "size": "600x900"
+      },
+      "hero.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/394360/library_hero.jpg",
+        "bytes": 250912,
+        "size": "1920x620"
+      }
+    }
+  },
+  "tww3": {
+    "appid": 1142710,
+    "name": "Total War: WARHAMMER III",
+    "fetched": "2026-10-30",
+    "files": {
+      "icon.png": {
+        "source": "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/1142710/3d3363e4b7dacf3d42ccdafba3a716e1e05bf465.ico",
+        "bytes": 2898,
+        "size": "32x32"
+      },
+      "logo.png": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1142710/logo.png",
+        "bytes": 299215,
+        "size": "640x360"
+      },
+      "header.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1142710/header.jpg",
+        "bytes": 46802,
+        "size": "460x215"
+      },
+      "capsule-small.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1142710/capsule_231x87.jpg",
+        "bytes": 12371,
+        "size": "231x87"
+      },
+      "capsule.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1142710/library_600x900_2x.jpg",
+        "bytes": 235833,
+        "size": "600x900"
+      },
+      "hero.jpg": {
+        "source": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1142710/library_hero.jpg",
+        "bytes": 427469,
+        "size": "1920x620"
+      }
+    }
+  }
+}

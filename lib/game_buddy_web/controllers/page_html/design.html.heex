@@ -1,0 +1,924 @@
+<Layouts.site flash={@flash} header_theme="dark">
+  <.night_panel
+    id="design-hero"
+    bleed
+    data-header-dark
+    class="-mt-16 pb-12 pt-28 sm:pb-16 sm:pt-36"
+  >
+    <.container>
+      <div class="grid items-center gap-10 lg:grid-cols-[1.25fr_1fr]">
+        <div>
+          <.eyebrow on_dark class="mb-4">Design system</.eyebrow>
+          <h1 class="text-balance text-h1 text-white">
+            Quiv <span class="text-brand-soft">design system</span>
+          </h1>
+          <p class="mt-5 max-w-lg text-pretty text-lead text-white/75">
+            A playful, exact look for game knowledge: one typeface, a violet brand, a buddy who
+            answers, and plain Tailwind on a small set of tokens.
+          </p>
+          <div class="mt-7 flex flex-wrap gap-2">
+            <.pill tone="glass" icon="hero-swatch">Tokens in app.css</.pill>
+            <.pill tone="glass" icon="hero-cube">Components in SiteComponents</.pill>
+            <.pill tone="glass" icon="hero-magnifying-glass">One page, find in page works</.pill>
+          </div>
+        </div>
+        <div class="relative mx-auto" aria-hidden="true">
+          <div class="absolute -right-2 -top-4 rotate-6 rounded-2xl rounded-bl-md bg-white px-4 py-3 text-sm font-semibold text-night shadow-lg">
+            Game knowledge<br />at your fingertips.
+          </div>
+          <.mascot expression="excited" class="size-56 drop-shadow-2xl sm:size-64" />
+        </div>
+      </div>
+    </.container>
+  </.night_panel>
+
+  <.container class="mt-10 pb-24 lg:mt-14">
+    <div class="lg:grid lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-12">
+      <%!-- Left nav: sticky list on wide screens, sticky strip on narrow ones --%>
+      <aside class="sticky top-16 z-30 -mx-4 mb-8 border-b border-line bg-canvas/90 px-4 backdrop-blur sm:-mx-6 sm:px-6 lg:top-24 lg:mx-0 lg:mb-0 lg:self-start lg:border-0 lg:bg-transparent lg:px-0 lg:backdrop-blur-none">
+        <nav
+          id="design-nav"
+          data-spy-nav
+          aria-label="Sections"
+          class="flex gap-1 overflow-x-auto py-3 lg:flex-col lg:overflow-visible lg:py-0"
+        >
+          <a
+            :for={{{id, label}, i} <- Enum.with_index(@sections, 1)}
+            href={"#" <> id}
+            class="flex shrink-0 items-center gap-3 rounded-full px-3 py-1.5 text-sm font-semibold text-ink-soft transition-colors hover:bg-muted hover:text-ink aria-[current=true]:bg-lavender aria-[current=true]:text-brand-deep lg:rounded-xl"
+          >
+            <span class="font-mono text-[11px] text-ink-faint">{section_number(i)}</span>
+            {label}
+          </a>
+        </nav>
+      </aside>
+
+      <div class="min-w-0 space-y-24">
+        <%!-- 01 Brand --%>
+        <.ds_section
+          id="brand"
+          number="01"
+          title="Brand"
+          text="The wordmark pairs the app icon with the name in Plus Jakarta Sans at 800: ink on light, white on night. Never recolor the mark, never set the name in another weight."
+        >
+          <div class="grid gap-6 md:grid-cols-2">
+            <.example title="Wordmark" code={~S|<.logo size="lg" />|}>
+              <div class="flex flex-col items-start gap-6">
+                <.logo size="lg" />
+                <.logo size="md" />
+                <.logo size="sm" />
+              </div>
+            </.example>
+            <.example title="Wordmark on night" dark code={~S|<.logo size="lg" on_dark />|}>
+              <div class="flex flex-col items-start gap-6">
+                <.logo size="lg" on_dark />
+                <.logo size="md" on_dark />
+              </div>
+            </.example>
+          </div>
+          <.example
+            title="App icon"
+            text="The mark is an SVG; the favicon is the same drawing."
+            code={~S|<.mark size={128} />|}
+          >
+            <div class="flex flex-wrap items-end gap-8">
+              <div :for={size <- [128, 64, 32, 16]} class="flex flex-col items-center gap-2">
+                <.mark size={size} />
+                <.caption>{size} × {size}</.caption>
+              </div>
+            </div>
+          </.example>
+        </.ds_section>
+
+        <%!-- 02 Mascot --%>
+        <.ds_section
+          id="mascot"
+          number="02"
+          title="Mascot"
+          text="Quiv, the mascot, is the one place the design is loud. Happy is the default; excited celebrates (the closing call to action); wink confirms something playful; curious belongs to empty states and errors. Size with a class, one Quiv per view."
+        >
+          <.example title="Expressions" code={~S|<.mascot expression="wink" class="size-40" />|}>
+            <div class="grid grid-cols-2 gap-6 sm:grid-cols-4">
+              <div
+                :for={
+                  {expression, note} <- [
+                    {"happy", "Friendly and welcoming"},
+                    {"wink", "Playful and cheeky"},
+                    {"excited", "Full of energy"},
+                    {"curious", "Nothing here yet"}
+                  ]
+                }
+                class="flex flex-col items-center gap-2 text-center"
+              >
+                <.mascot expression={expression} class="size-32" />
+                <p class="text-sm font-bold capitalize text-ink">{expression}</p>
+                <.caption>{note}</.caption>
+              </div>
+            </div>
+          </.example>
+          <div class="grid gap-6 md:grid-cols-2">
+            <.example title="On night" dark code={~S|<.mascot class="size-32" />|}>
+              <div class="flex justify-center"><.mascot class="size-32" /></div>
+            </.example>
+            <.example
+              title="With a bubble"
+              text="A white bubble with one short line, offset to a corner."
+            >
+              <div class="relative mx-auto w-fit">
+                <div class="absolute -right-6 -top-3 rotate-6 rounded-2xl rounded-bl-md bg-white px-3 py-2 text-xs font-semibold text-night shadow-md ring-1 ring-line/80">
+                  Ask me anything.
+                </div>
+                <.mascot expression="wink" class="size-32" />
+              </div>
+            </.example>
+          </div>
+        </.ds_section>
+
+        <%!-- 03 Illustration --%>
+        <.ds_section
+          id="illustration"
+          number="03"
+          title="Illustration"
+          text="Floating islands in the brand's violet and lime, each tied to one moment on the landing page. Sources live in assets/images; mix assets.images writes the WebP files the site serves."
+        >
+          <.example
+            title="Islands"
+            text="Transparent backgrounds, so they float on canvas and night alike."
+          >
+            <div class="grid gap-6 sm:grid-cols-3">
+              <div
+                :for={{file, name, use} <- Enum.take(illustrations(), 3)}
+                class="flex flex-col items-center text-center"
+              >
+                <img src={"/images/site/#{file}"} alt={name} class="h-40 w-auto" loading="lazy" />
+                <p class="mt-3 text-sm font-bold text-ink">{name}</p>
+                <.caption>{use}</.caption>
+                <code class="mt-1 font-mono text-[11px] text-ink-faint">{file}</code>
+              </div>
+            </div>
+          </.example>
+          <.example
+            title="Valley"
+            text="A background: always under a night gradient so text stays readable."
+          >
+            <div class="relative overflow-hidden rounded-2xl">
+              <img
+                src="/images/site/valley.webp"
+                alt="Valley"
+                class="h-56 w-full object-cover"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-gradient-to-r from-night via-night/80 to-night/10">
+              </div>
+              <div class="absolute inset-0 flex items-center p-8">
+                <p class="max-w-xs text-h4 text-white">Knowledge that is always at your side.</p>
+              </div>
+            </div>
+          </.example>
+        </.ds_section>
+
+        <%!-- 04 Color --%>
+        <.ds_section
+          id="color"
+          number="04"
+          title="Color"
+          text="Violet leads; coral, lime and sun take turns as the second color, never all at once. Soft fills carry tags and messages. Shadows are tinted indigo. Tokens are Tailwind theme variables, so bg-brand, text-ink-soft and ring-line are the utilities."
+        >
+          <.example :for={{group, colors} <- palette()} title={group}>
+            <div class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
+              <.swatch
+                :for={{name, token, hex, use} <- colors}
+                name={name}
+                token={token}
+                hex={hex}
+                text={use}
+              />
+            </div>
+          </.example>
+        </.ds_section>
+
+        <%!-- 05 Typography --%>
+        <.ds_section
+          id="typography"
+          number="05"
+          title="Typography"
+          text="One family for everything: Plus Jakarta Sans, a geometric sans with a friendly round. Display sizes are heavy and tight; body text is regular at 16 with a comfortable line. Line length stays under 70 characters."
+        >
+          <div class="grid gap-6 md:grid-cols-[1fr_1.6fr]">
+            <.example title="Plus Jakarta Sans" text="Variable weight 200 to 800, self-hosted.">
+              <p class="text-[7rem] font-extrabold leading-none tracking-tighter text-ink">Aa</p>
+              <p class="mt-4 break-words text-sm leading-relaxed text-ink-soft">
+                Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz
+                0123456789
+              </p>
+              <p class="mt-2 text-sm italic text-ink-soft">
+                Italic for emphasis, never for headings.
+              </p>
+            </.example>
+            <.example title="Type scale" text="Classes come from the --text-* tokens.">
+              <div class="divide-y divide-line">
+                <div
+                  :for={{name, class, size, weight, tracking, sample} <- type_scale()}
+                  class="grid items-baseline gap-2 py-3 sm:grid-cols-[6rem_1fr]"
+                >
+                  <div class="font-mono text-[11px] leading-snug text-ink-soft">
+                    <p class="font-bold text-ink">{name}</p>
+                    <p>{class}</p>
+                    <p>{size} · {weight}</p>
+                    <p :if={tracking != "0"}>{tracking}</p>
+                  </div>
+                  <p class={[class, "min-w-0 text-balance text-ink"]}>{sample}</p>
+                </div>
+              </div>
+            </.example>
+          </div>
+        </.ds_section>
+
+        <%!-- 06 Buttons --%>
+        <.ds_section
+          id="buttons"
+          number="06"
+          title="Buttons"
+          text="Pills, always. Primary is the one action a view wants; secondary sits beside it; ghost is for chrome; destructive only for deletion. On night panels use light and outline. A trailing arrow marks the step that leaves the page."
+        >
+          <.example
+            title="Variants and states"
+            code={
+              ~S|<.button variant="primary" size="md" trailing_icon="hero-arrow-right">Get started</.button>|
+            }
+          >
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead>
+                  <tr class="text-xs font-bold uppercase tracking-wider text-ink-soft">
+                    <th class="pb-3 pr-4"></th>
+                    <th
+                      :for={v <- ~w(Primary Secondary Ghost Destructive)}
+                      class="pb-3 pr-4 font-bold"
+                    >
+                      {v}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr :for={
+                    {label, state, disabled} <- [
+                      {"Default", nil, false},
+                      {"Hover", "hover", false},
+                      {"Pressed", "active", false},
+                      {"Disabled", nil, true}
+                    ]
+                  }>
+                    <td class="py-2 pr-4 text-xs font-semibold text-ink-soft">{label}</td>
+                    <td
+                      :for={variant <- ~w(primary secondary ghost destructive)}
+                      class="py-2 pr-4"
+                    >
+                      <.button
+                        variant={variant}
+                        state={state}
+                        disabled={disabled}
+                        trailing_icon={
+                          if(variant == "destructive", do: nil, else: "hero-arrow-right")
+                        }
+                        icon={if(variant == "destructive", do: "hero-trash", else: nil)}
+                      >
+                        {if variant == "destructive", do: "Delete", else: "Get started"}
+                      </.button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </.example>
+          <div class="grid gap-6 md:grid-cols-2">
+            <.example title="On night" dark code={~S|<.button variant="light">Connect</.button>|}>
+              <div class="flex flex-wrap gap-3">
+                <.button variant="light" icon="hero-link">Connect your assistant</.button>
+                <.button variant="outline" icon="hero-play">See it answer</.button>
+                <.button variant="primary">Primary works too</.button>
+              </div>
+            </.example>
+            <.example title="Sizes" code={~S|<.button size="sm">Small</.button>|}>
+              <div class="flex flex-wrap items-center gap-3">
+                <.button size="sm">Small</.button>
+                <.button size="md">Medium</.button>
+                <.button size="lg">Large</.button>
+              </div>
+            </.example>
+          </div>
+          <.example
+            title="Icon buttons"
+            text="One icon, a label for screen readers, round."
+            code={~S|<.icon_button icon="hero-heart" label="Favourite" />|}
+          >
+            <div class="flex flex-wrap items-center gap-3">
+              <.icon_button icon="hero-heart" label="Favourite" variant="primary" />
+              <.icon_button icon="hero-heart" label="Favourite" variant="secondary" />
+              <.icon_button icon="hero-heart" label="Favourite" variant="ghost" />
+              <.icon_button icon="hero-heart" label="Favourite" variant="secondary" disabled />
+              <.icon_button icon="hero-heart" label="Favourite" variant="secondary" size="sm" />
+              <span class="rounded-full bg-night p-2">
+                <.icon_button icon="hero-x-mark" label="Close" variant="outline" size="sm" />
+              </span>
+            </div>
+          </.example>
+        </.ds_section>
+
+        <%!-- 07 Forms --%>
+        <.ds_section
+          id="forms"
+          number="07"
+          title="Forms"
+          text="Fields are 44 px tall with a 12 px radius; search is a pill. Labels sit above in semibold; hints and errors below. Focus is a soft violet ring, and errors turn the border coral and explain what to do."
+        >
+          <div class="grid gap-6 md:grid-cols-2">
+            <.example
+              title="Text input"
+              code={
+                ~S|<.text_field id="email" label="Email" icon="hero-envelope" placeholder="you@example.com" />|
+              }
+            >
+              <div class="space-y-5">
+                <.text_field
+                  id="ds-email"
+                  label="Email"
+                  icon="hero-envelope"
+                  type="email"
+                  placeholder="you@example.com"
+                  hint="We only use it to send the invite."
+                />
+                <.text_field
+                  id="ds-name"
+                  label="Display name"
+                  placeholder="Quiv"
+                  error="Pick a name with at least three letters."
+                />
+                <.text_field id="ds-disabled" label="Disabled" placeholder="Not now" disabled />
+              </div>
+            </.example>
+            <.example
+              title="Search, textarea"
+              code={
+                ~S|<.search_field id="q" placeholder="Search games, entities or mechanics" kbd="⌘K" />|
+              }
+            >
+              <div class="space-y-5">
+                <.search_field
+                  id="ds-search"
+                  placeholder="Search games, entities or mechanics"
+                  kbd="⌘K"
+                />
+                <.textarea_field
+                  id="ds-feedback"
+                  label="Feedback"
+                  placeholder="What should Quiv know?"
+                  rows={4}
+                />
+              </div>
+            </.example>
+            <.example
+              title="Select"
+              code={
+                ~S|<.select_field id="game" label="Game" icon="hero-puzzle-piece" options={["Europa Universalis V", "Civilization VII"]} />|
+              }
+            >
+              <div class="space-y-5">
+                <.select_field
+                  id="ds-game"
+                  label="Game"
+                  icon="hero-puzzle-piece"
+                  prompt="Select a game"
+                  options={["Europa Universalis V", "Civilization VII", "Hearts of Iron IV"]}
+                />
+                <.select_field
+                  id="ds-version"
+                  label="Version"
+                  options={["Latest build", "A specific build"]}
+                  value="Latest build"
+                />
+              </div>
+            </.example>
+            <.example
+              title="Choices"
+              code={~S|<.switch id="live" label="Live updates" checked />|}
+            >
+              <div class="space-y-6">
+                <div class="flex flex-col gap-3">
+                  <.checkbox id="ds-c1" label="Include localization text" checked />
+                  <.checkbox id="ds-c2" label="Enable notifications" />
+                </div>
+                <div class="flex flex-wrap gap-5">
+                  <.radio id="ds-r1" name="ds-platform" value="pc" label="PC" checked />
+                  <.radio id="ds-r2" name="ds-platform" value="console" label="Console" />
+                  <.radio id="ds-r3" name="ds-platform" value="any" label="Either" />
+                </div>
+                <div class="flex flex-wrap gap-6">
+                  <.switch id="ds-s1" label="Live updates" checked />
+                  <.switch id="ds-s2" label="Off" />
+                </div>
+                <.slider id="ds-slider" label="Results per page" value={50} />
+              </div>
+            </.example>
+          </div>
+        </.ds_section>
+
+        <%!-- 08 Navigation --%>
+        <.ds_section
+          id="navigation"
+          number="08"
+          title="Navigation"
+          text="The header is in the site layout: wordmark, text links, the dashboard, one primary action. Sidebars, tabs, breadcrumbs and pagination share the same violet-on-lavender current state."
+        >
+          <.example title="Header" text="Layouts.site renders it; shown here at a narrower width.">
+            <div class="flex h-14 items-center gap-4 rounded-2xl bg-surface px-4 ring-1 ring-line">
+              <.logo size="sm" />
+              <nav class="hidden items-center gap-1 sm:flex">
+                <a
+                  :for={l <- ~w(Features Games Docs)}
+                  href="#navigation"
+                  class="rounded-full px-3 py-1.5 text-sm font-semibold text-ink-soft hover:bg-muted hover:text-ink"
+                >
+                  {l}
+                </a>
+              </nav>
+              <div class="ml-auto flex items-center gap-2">
+                <.icon_button
+                  icon="hero-magnifying-glass"
+                  label="Search"
+                  variant="ghost"
+                  size="sm"
+                />
+                <.button size="sm" trailing_icon="hero-arrow-right">Get started</.button>
+              </div>
+            </div>
+          </.example>
+          <div class="grid gap-6 md:grid-cols-2">
+            <.example
+              title="Sidebar"
+              code={~S|<.side_nav items={[{"Home", "hero-home", "/"}]} active="Home" />|}
+            >
+              <div class="grid gap-6 sm:grid-cols-2">
+                <.side_nav
+                  active="Games"
+                  items={[
+                    {"Home", "hero-home", "#navigation"},
+                    {"Search", "hero-magnifying-glass", "#navigation"},
+                    {"Games", "hero-puzzle-piece", "#navigation"},
+                    {"Updates", "hero-arrow-path", "#navigation"},
+                    {"Settings", "hero-cog-6-tooth", "#navigation"}
+                  ]}
+                />
+                <div class="rounded-2xl bg-night p-3">
+                  <.side_nav
+                    on_dark
+                    active="Home"
+                    items={[
+                      {"Home", "hero-home", "#navigation"},
+                      {"Search", "hero-magnifying-glass", "#navigation"},
+                      {"Games", "hero-puzzle-piece", "#navigation"}
+                    ]}
+                  />
+                </div>
+              </div>
+            </.example>
+            <.example
+              title="Tabs, breadcrumb, pagination"
+              code={~S|<.tabs id="t" items={~w(Overview Items)} active="Overview" />|}
+            >
+              <div class="space-y-6">
+                <.tabs
+                  id="ds-tabs"
+                  items={~w(Overview Items Guides Discussions)}
+                  active="Overview"
+                />
+                <.breadcrumb items={[
+                  {"Games", "#navigation"},
+                  {"Europa Universalis V", "#navigation"},
+                  {"Reforms", "#navigation"}
+                ]} />
+                <.pagination page={2} total={10} />
+              </div>
+            </.example>
+          </div>
+        </.ds_section>
+
+        <%!-- 09 Feedback --%>
+        <.ds_section
+          id="feedback"
+          number="09"
+          title="Feedback"
+          text="Status is a pill with a dot; tags are pills without one. Messages name what happened and what to do next, in the interface's voice. Toasts are night cards with the mark; tooltips are night too."
+        >
+          <div class="grid gap-6 md:grid-cols-2">
+            <.example title="Pills" code={~S|<.pill tone="lime" dot>Live from the files</.pill>|}>
+              <div class="space-y-4">
+                <div class="flex flex-wrap gap-2">
+                  <.pill tone="lime" dot>Live from the files</.pill>
+                  <.pill tone="violet" dot>Updated 5 min ago</.pill>
+                  <.pill tone="neutral" dot>Planned</.pill>
+                  <.pill tone="coral" dot>2 errors</.pill>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <.pill tone="violet" size="sm">Reform</.pill>
+                  <.pill tone="coral" size="sm">Law</.pill>
+                  <.pill tone="lime" size="sm">Building</.pill>
+                  <.pill tone="sun" size="sm">Event</.pill>
+                  <.pill tone="outline" size="sm">Modifier</.pill>
+                  <.pill tone="night" size="sm" icon="hero-sparkles">New</.pill>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <.key_chip>game_entity</.key_chip>
+                  <.key_chip>index/government_reforms</.key_chip>
+                  <.key_chip>topic/stability</.key_chip>
+                </div>
+              </div>
+            </.example>
+            <.example
+              title="Alerts"
+              code={
+                ~S|<.alert kind="success" title="Game files synced" text="The latest build is indexed." dismissible />|
+              }
+            >
+              <div class="space-y-3">
+                <.alert
+                  kind="success"
+                  title="Game files synced"
+                  text="The latest build is indexed and searchable."
+                  dismissible
+                />
+                <.alert
+                  kind="info"
+                  title="New content available"
+                  text="The latest patch has been processed."
+                  dismissible
+                />
+                <.alert
+                  kind="warning"
+                  title="Some data may be incomplete"
+                  text="Embeddings are still being computed."
+                  dismissible
+                />
+                <.alert
+                  kind="error"
+                  title="Connection lost"
+                  text="Trying to reconnect. Check that the server is running."
+                  dismissible
+                />
+              </div>
+            </.example>
+            <.example
+              title="Tooltip and toast"
+              code={
+                ~S|<.tooltip title="Live from game files" text="Updated with every build.">…</.tooltip>|
+              }
+            >
+              <div class="flex flex-col items-start gap-8 pt-8">
+                <.tooltip
+                  title="Live from the game files"
+                  text="Updated automatically with every build."
+                >
+                  <.pill tone="lime" dot>Hover me</.pill>
+                </.tooltip>
+                <.toast
+                  title="Game added to your library"
+                  text="Europa Universalis V is ready to ask."
+                />
+              </div>
+            </.example>
+            <.example
+              title="Progress and loading"
+              code={~S|<.progress value={75} label="Ingesting" />|}
+            >
+              <div class="space-y-8">
+                <.progress value={75} label="Ingesting" />
+                <.skeleton lines={3} avatar />
+                <.skeleton lines={2} />
+              </div>
+            </.example>
+          </div>
+        </.ds_section>
+
+        <%!-- 10 Cards --%>
+        <.ds_section
+          id="cards"
+          number="10"
+          title="Cards"
+          text="One surface, a 24 px radius, a hairline ring and the lightest shadow. Hierarchy comes from size and the icon tile's color, not from heavier borders. Cards never nest in cards."
+        >
+          <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <.example
+              title="Feature"
+              code={~S|<.feature_card icon="hero-book-open" tone="violet" title="…" text="…" />|}
+            >
+              <.feature_card
+                icon="hero-book-open"
+                tone="violet"
+                title="Mechanics and rules"
+                text="Conditions and effects in the game's own tooltip language, with exact numbers."
+              />
+            </.example>
+            <.example title="Feature, row" code={~S|<.feature_card layout="row" … />|}>
+              <div class="space-y-3">
+                <.feature_card
+                  layout="row"
+                  icon="hero-check-badge"
+                  tone="lime"
+                  title="Exact"
+                  text="Numbers come from the script."
+                />
+                <.feature_card
+                  layout="row"
+                  icon="hero-clock"
+                  tone="sun"
+                  title="Current"
+                  text="Re-ingested every build."
+                />
+              </div>
+            </.example>
+            <.example
+              title="Game"
+              text="The icon is the game's own (Steam's client icon, fetched by scripts/steam_art.py); without one the card draws a tile in the slug's colours. On its own, game_icon goes next to a game's name in lists and sentences."
+              code={
+                ~S|<.game_card name="…" slug="eu5" status="live" meta="…" image="/images/games/eu5/icon.png" />
+<.game_icon slug="eu5" image="/images/games/eu5/icon.png" size="sm" />|
+              }
+            >
+              <div class="grid gap-3">
+                <.game_card
+                  name="Europa Universalis V"
+                  slug="eu5"
+                  status="live"
+                  meta="Build 26211608"
+                  image="/images/games/eu5/icon.png"
+                />
+                <.game_card name="Civilization VII" slug="civ7" meta="Survey pending" />
+              </div>
+              <div class="mt-4 flex flex-wrap items-center gap-3 text-sm font-semibold text-ink">
+                <span class="inline-flex items-center gap-2">
+                  <.game_icon slug="eu5" image="/images/games/eu5/icon.png" size="sm" />
+                  Europa Universalis V
+                </span>
+                <span class="inline-flex items-center gap-2">
+                  <.game_icon slug="hoi4" image="/images/games/hoi4/icon.png" size="sm" />
+                  Hearts of Iron IV
+                </span>
+                <span class="inline-flex items-center gap-2">
+                  <.game_icon slug="civ7" size="sm" /> Civilization VII (no icon yet)
+                </span>
+              </div>
+            </.example>
+            <.example
+              title="Stat"
+              code={~S|<.stat_card icon="hero-cube" value="118k" label="Entities" />|}
+            >
+              <.stat_card
+                icon="hero-cube"
+                value="118k"
+                label="Entities indexed"
+                text="From one build of one game."
+              />
+            </.example>
+            <.example title="Quote" code={~S|<.quote_card quote="…" name="…" role="…" />|}>
+              <.quote_card
+                quote="The answer came with the exact condition from the files, not a guess. That changes how I plan a campaign."
+                name="A player"
+                role="Placeholder quote"
+              />
+            </.example>
+            <.example
+              title="Step"
+              code={~S|<.step_card number={1} title="Connect" text="…">…</.step_card>|}
+            >
+              <.step_card
+                number={1}
+                title="Connect"
+                text="Add the URL as a connector in your assistant."
+              >
+                <div class="rounded-xl bg-muted px-3 py-2 font-mono text-xs text-ink-soft">
+                  https://…/mcp
+                </div>
+              </.step_card>
+            </.example>
+            <.example
+              title="Dialog"
+              code={~S|<.dialog_card title="…" text="…"><:actions>…</:actions></.dialog_card>|}
+              body_class="bg-muted/60"
+            >
+              <.dialog_card
+                title="Add to your games?"
+                text="Quiv will index the game's files and keep them current."
+              >
+                <div class="flex items-center gap-3 rounded-2xl bg-muted p-3">
+                  <.game_icon slug="eu5" image="/images/games/eu5/icon.png" size="md" />
+                  <div class="text-sm">
+                    <p class="font-bold text-ink">Europa Universalis V</p>
+                    <p class="text-ink-soft">Paradox Interactive</p>
+                  </div>
+                </div>
+                <:actions>
+                  <.button variant="ghost">Cancel</.button>
+                  <.button>Add game</.button>
+                </:actions>
+              </.dialog_card>
+            </.example>
+            <.example
+              title="Conversation"
+              code={~S|<.chat_bubble from="user">…</.chat_bubble>|}
+              class="md:col-span-2"
+            >
+              <div class="space-y-3">
+                <.chat_bubble from="user">
+                  How do I unlock the second estate privilege?
+                </.chat_bubble>
+                <.chat_bubble from="buddy">
+                  It needs the estate's loyalty above 50 and a law in place. Here is the condition as the game states it, with the key to the law.
+                </.chat_bubble>
+              </div>
+            </.example>
+          </div>
+        </.ds_section>
+
+        <%!-- 11 Patterns --%>
+        <.ds_section
+          id="patterns"
+          number="11"
+          title="Patterns"
+          text="Sections open with an eyebrow, a heavy title and one lead paragraph, left aligned, at most 36 rem wide. Dark panels are rounded cards or full-width bands, with a dot grid and a violet glow. The page closes with a call to action and Quiv."
+        >
+          <.example
+            title="Section heading"
+            code={
+              ~S|<.section_heading eyebrow="…" title="…" lead="…"><:actions>…</:actions></.section_heading>|
+            }
+          >
+            <.section_heading
+              eyebrow="Built for players and AI agents"
+              title="Exact knowledge for every playstyle."
+              lead="Whether you are planning the next campaign or building an agent, the answers come from the files."
+            >
+              <:actions>
+                <.button trailing_icon="hero-arrow-right">See how it works</.button>
+                <.button variant="ghost">Browse games</.button>
+              </:actions>
+            </.section_heading>
+          </.example>
+          <.example
+            title="Night panel"
+            text="A rounded card on its own; with bleed it becomes a full-width band, as the hero, the demo and the closing call to action on the landing page. A band at the top of the page carries data-header-dark so the header turns transparent over it."
+            code={
+              ~S|<.night_panel class="p-10">…</.night_panel>
+<.night_panel bleed data-header-dark class="-mt-16 pt-28"><.container>…</.container></.night_panel>|
+            }
+            body_class="bg-muted/60"
+          >
+            <.night_panel class="p-8 sm:p-10">
+              <.section_heading
+                on_dark
+                eyebrow="In your assistant"
+                title="Answers that cite the files."
+                lead="Ask in plain language; get the conditions, effects and numbers as the game states them."
+              />
+              <div class="mt-6 flex flex-wrap gap-x-6 gap-y-3">
+                <.check_item on_dark>Works with Claude and ChatGPT</.check_item>
+                <.check_item on_dark>Every fact cites its source</.check_item>
+              </div>
+            </.night_panel>
+          </.example>
+          <.example
+            title="Call to action"
+            text="Card by default; bleed for the full-width band that closes the landing page."
+            code={
+              ~S|<.cta_banner bleed eyebrow="…" title="…" text="…"><:actions>…</:actions></.cta_banner>|
+            }
+            body_class="bg-muted/60"
+          >
+            <.cta_banner
+              eyebrow="Ready to explore?"
+              title="Bring Quiv into your assistant."
+              text="Connect the server and ask the question you have been meaning to ask."
+            >
+              <:actions>
+                <.button variant="light" icon="hero-link">Connect your assistant</.button>
+                <.button variant="outline">Open the dashboard</.button>
+              </:actions>
+            </.cta_banner>
+          </.example>
+        </.ds_section>
+
+        <%!-- 12 Foundations --%>
+        <.ds_section
+          id="foundations"
+          number="12"
+          title="Foundations"
+          text="A 4 px grid; corners that grow with the element; four shadows, all indigo; Heroicons outline at a 1.5 px stroke, solid only inside filled tiles. Motion is one float in the hero and short transitions on hover, both off when the visitor prefers reduced motion."
+        >
+          <div class="grid gap-6 md:grid-cols-2">
+            <.example title="Spacing" text="Tailwind steps: 1, 2, 3, 4, 6, 8, 12, 16.">
+              <div class="flex flex-wrap items-end gap-4">
+                <div :for={px <- spacing()} class="flex flex-col items-center gap-2">
+                  <div class="rounded-md bg-brand" style={"width: #{px}px; height: #{px}px"}>
+                  </div>
+                  <.caption>{px}</.caption>
+                </div>
+              </div>
+            </.example>
+            <.example title="Radius">
+              <div class="flex flex-wrap items-end gap-4">
+                <div
+                  :for={{class, px, use} <- radii()}
+                  class="flex flex-col items-center gap-2 text-center"
+                >
+                  <div class={["size-14 border-2 border-brand bg-lavender", class]}></div>
+                  <.caption>{px}</.caption>
+                  <p class="max-w-20 text-[11px] text-ink-faint">{use}</p>
+                </div>
+              </div>
+            </.example>
+            <.example title="Shadows" body_class="bg-muted/40">
+              <div class="flex flex-wrap gap-6">
+                <div
+                  :for={{class, use} <- shadows()}
+                  class="flex flex-col items-center gap-2 text-center"
+                >
+                  <div class={["size-20 rounded-2xl bg-surface", class]}></div>
+                  <.caption>{class}</.caption>
+                  <p class="max-w-24 text-[11px] text-ink-faint">{use}</p>
+                </div>
+              </div>
+            </.example>
+            <.example title="Icons" text="Heroicons, outline by default; the <.icon> component.">
+              <div class="flex flex-wrap gap-3">
+                <span
+                  :for={name <- icon_sample()}
+                  class="grid size-11 place-items-center rounded-xl bg-muted text-ink"
+                  title={name}
+                >
+                  <.icon name={name} class="size-5" />
+                </span>
+              </div>
+              <div class="mt-4 flex flex-wrap gap-3">
+                <.icon_tile icon="hero-book-open" tone="violet" />
+                <.icon_tile icon="hero-bolt" tone="coral" />
+                <.icon_tile icon="hero-map" tone="lime" />
+                <.icon_tile icon="hero-sparkles" tone="sun" />
+                <.icon_tile icon="hero-cube" tone="night" />
+                <.icon_tile icon="hero-link" tone="soft" />
+              </div>
+            </.example>
+          </div>
+        </.ds_section>
+
+        <%!-- 13 Layout --%>
+        <.ds_section
+          id="layout"
+          number="13"
+          title="Layout"
+          text="Content sits in a 72 rem container with a 1 rem gutter (1.5 rem from 640 px). Sections breathe 5 to 6 rem. Text and visuals split roughly 1 : 1.4 on wide screens and stack below 1024 px. Everything works at phone width without horizontal scroll."
+        >
+          <.example
+            title="Container and split"
+            code={~S|<.container class="grid gap-12 lg:grid-cols-[1fr_1.4fr]">…</.container>|}
+            body_class="bg-muted/40"
+          >
+            <div class="rounded-2xl border-2 border-dashed border-brand/40 p-4">
+              <p class="mb-3 font-mono text-[11px] text-brand">
+                container · max-w-6xl · px-4 sm:px-6
+              </p>
+              <div class="grid gap-3 lg:grid-cols-[1fr_1.4fr]">
+                <div class="rounded-xl bg-lavender p-4 text-xs font-semibold text-brand-deep">
+                  heading · max-w-xl
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div :for={_ <- 1..4} class="h-14 rounded-xl bg-surface ring-1 ring-line"></div>
+                </div>
+              </div>
+            </div>
+          </.example>
+          <.example title="Pages" text="Where the parts live.">
+            <ul class="grid gap-3 text-sm sm:grid-cols-2">
+              <li
+                :for={
+                  {what, where} <- [
+                    {"Tokens", "assets/css/app.css"},
+                    {"Components", "lib/game_buddy_web/components/site_components.ex"},
+                    {"This page's scaffolding",
+                     "lib/game_buddy_web/components/design_components.ex"},
+                    {"Header and footer", "lib/game_buddy_web/components/layouts.ex"},
+                    {"Landing page", "lib/game_buddy_web/controllers/page_html/home.html.heex"},
+                    {"Site behaviour", "assets/js/site.js"},
+                    {"Illustrations", "assets/images → mix assets.images"}
+                  ]
+                }
+                class="rounded-2xl bg-muted px-4 py-3"
+              >
+                <p class="font-bold text-ink">{what}</p>
+                <code class="font-mono text-[11px] text-ink-soft">{where}</code>
+              </li>
+            </ul>
+          </.example>
+        </.ds_section>
+      </div>
+    </div>
+  </.container>
+</Layouts.site>

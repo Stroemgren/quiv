@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>Entity view</title>
+<style>
+  :root {
+    --panel: #1b1915;
+    --panel-2: #23201a;
+    --inset: #15130f;
+    --inset-2: #1e1b16;
+    --frame: #6e5730;
+    --frame-hi: #b8954c;
+    --gold: #e3c272;
+    --title: #efe3c3;
+    --text: #d8cfb6;
+    --muted: #9a917c;
+    --blue: #8fb8e0;
+    --blue-2: #a9c9ea;
+    --good: #7fd47f;
+    --bad: #e46a5c;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+    --mono: ui-monospace, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: var(--serif); font-size: 15px; line-height: 1.4; color: var(--text); padding: 4px; }
+  body.fullscreen { padding: 12px; }
+  .panel { background: linear-gradient(180deg, var(--panel-2), var(--panel)); border: 1px solid var(--frame); border-radius: 7px; box-shadow: 0 0 0 1px #0d0c0a inset, 0 0 0 1px #0d0c0a, 0 6px 18px rgba(0,0,0,.45); padding: 12px 14px 12px; }
+  .frame-top { height: 2px; background: linear-gradient(90deg, transparent, var(--frame-hi), transparent); margin: -12px -14px 10px; border-radius: 7px 7px 0 0; }
+  .head { display: flex; gap: 12px; align-items: center; }
+  .tile { flex: 0 0 48px; width: 48px; height: 48px; border: 1px solid var(--frame-hi); border-radius: 4px; background: radial-gradient(circle at 50% 35%, #3a3225, #1a1712 70%); display: grid; place-items: center; color: var(--gold); font-size: 24px; font-weight: 700; box-shadow: 0 0 0 1px #0d0c0a inset; }
+  .tile.small { flex-basis: 36px; width: 36px; height: 36px; font-size: 18px; }
+  .tile.img { background: #0d0c0a; padding: 2px; }
+  .tile img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .lab { display: flex; align-items: center; min-width: 0; gap: 6px; }
+  .mi { width: 18px; height: 18px; object-fit: contain; flex: 0 0 18px; }
+  th .mi { width: 22px; height: 22px; vertical-align: middle; margin-right: 6px; }
+  /* theme from the game files: its frame texture as a 9-slice border, its overlay texture over the panel color */
+  body.themed .panel { border: var(--frame-width, 5px) solid transparent; border-image-source: var(--frame-img); border-image-slice: var(--frame-slice, 10); border-image-width: var(--frame-width, 5px); border-image-repeat: stretch; border-radius: 6px; background: linear-gradient(180deg, color-mix(in srgb, var(--glow) 30%, var(--panel)), var(--panel) 45%); background-clip: padding-box; box-shadow: 0 6px 18px rgba(0,0,0,.5); }
+  body.themed .frame-top { display: none; }
+  body.themed .box, body.themed .headline .num, body.themed pre, body.themed table.compare th, body.themed table.compare td { background: color-mix(in srgb, var(--box-tint) 22%, var(--panel)); border-color: color-mix(in srgb, var(--box-tint) 45%, var(--panel)); }
+  body.themed .chip, body.themed .tab { background: color-mix(in srgb, var(--box-tint) 35%, var(--panel)); border-color: color-mix(in srgb, var(--box-tint) 60%, var(--panel)); }
+  body.themed .rows li { border-top-color: color-mix(in srgb, var(--box-tint) 45%, var(--panel)); }
+  body.themed .gbtn { background: color-mix(in srgb, var(--frame) 35%, var(--panel)); }
+  h1 { font-size: 22px; line-height: 1.15; margin: 0; font-weight: 700; color: var(--title); letter-spacing: .01em; text-shadow: 0 1px 0 #000; }
+  .card h1 { font-size: 17px; }
+  .sub { font-style: italic; color: var(--blue); font-size: 15px; margin-top: 2px; }
+  .sub .key { font-family: var(--mono); font-style: normal; font-size: 11px; color: var(--muted); margin-left: 6px; }
+  .headline { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; margin: 12px 0 0; }
+  .headline .num { background: var(--inset); border: 1px solid #2c2820; border-radius: 4px; padding: 8px 6px 6px; text-align: center; }
+  .headline .v { font-size: 22px; font-weight: 700; color: var(--gold); line-height: 1.1; }
+  .headline .l { font-size: 12px; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .good { color: var(--good) !important; } .bad { color: var(--bad) !important; }
+  .box { background: var(--inset); border: 1px solid #2c2820; border-radius: 4px; padding: 8px 10px; margin: 10px 0 0; }
+  .box-title { color: var(--blue-2); font-size: 15px; margin: 0 0 6px; font-weight: 400; }
+  .box-title small { color: var(--muted); font-size: 12px; margin-left: 6px; }
+  .rows { margin: 0; padding: 0; list-style: none; }
+  .rows li { display: flex; justify-content: space-between; gap: 12px; padding: 3px 0; border-top: 1px solid #262219; }
+  .rows li:first-child { border-top: 0; }
+  .rows .val { white-space: nowrap; font-weight: 700; color: var(--gold); }
+  .lines { margin: 0; padding: 0; list-style: none; }
+  .lines li { padding: 2px 0; color: var(--text); }
+  .lines li.group { color: var(--blue); }
+  .blk + .blk { margin-top: 8px; }
+  .blk-title { color: var(--title); font-weight: 700; font-size: 14px; margin: 2px 0 2px; }
+  .desc { font-style: italic; color: #cfc5aa; }
+  .desc b { color: var(--gold); font-style: normal; }
+  .clamp { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden; }
+  .clamp-3 { -webkit-line-clamp: 3; } .clamp-2 { -webkit-line-clamp: 2; }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .gbtn { font-family: var(--serif); font-size: 14px; font-weight: 700; color: var(--title); background: linear-gradient(180deg, #3a3124, #221d16); border: 1px solid var(--frame-hi); border-radius: 4px; padding: 7px 14px; cursor: pointer; min-height: 36px; box-shadow: 0 0 0 1px #0d0c0a inset; }
+  .gbtn:hover { background: linear-gradient(180deg, #4a3e2d, #2a241b); }
+  .gbtn.quiet { border-color: var(--frame); color: var(--text); font-weight: 400; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 3px; background: var(--inset-2); color: var(--text); font-size: 13px; border: 1px solid #3a3225; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--serif); }
+  button.chip { cursor: pointer; color: var(--gold); }
+  button.chip:hover { border-color: var(--frame-hi); }
+  .carousel { display: flex; gap: 10px; overflow-x: auto; padding: 2px 0 6px; scroll-snap-type: x mandatory; }
+  .carousel .card { flex: 0 0 250px; scroll-snap-align: start; }
+  .carousel .card .headline { grid-template-columns: 1fr 1fr; }
+  pre { font-family: var(--mono); font-size: 12px; white-space: pre-wrap; word-break: break-word; background: var(--inset); border: 1px solid #2c2820; border-radius: 4px; padding: 10px; margin: 6px 0; color: #c9c0a8; }
+  .topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .topbar .spacer { flex: 1; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 12px; }
+  .tab { font-family: var(--serif); font-size: 14px; padding: 6px 12px; border-radius: 3px; border: 1px solid var(--frame); background: var(--inset-2); color: var(--text); cursor: pointer; }
+  .tab.active { border-color: var(--frame-hi); color: var(--gold); background: #2a241b; }
+  .compare-wrap { overflow-x: auto; }
+  table.compare { border-collapse: collapse; width: 100%; table-layout: fixed; min-width: 600px; }
+  table.compare th, table.compare td { border: 1px solid #332c21; padding: 8px; vertical-align: top; text-align: left; font-size: 13px; }
+  table.compare th { background: var(--inset); color: var(--title); font-size: 15px; }
+  table.compare th.row { width: 110px; color: var(--blue-2); font-weight: 400; font-size: 14px; }
+  table.compare td { background: #19170f; }
+  .notice { color: var(--muted); font-size: 12px; margin-top: 8px; }
+  .source { color: var(--muted); font-size: 12px; font-family: var(--mono); margin-top: 10px; }
+  h2 { font-size: 17px; margin: 18px 0 6px; color: var(--blue-2); font-weight: 400; }
+</style>
+</head>
+<body>
+<div id="root" class="panel"><div class="frame-top"></div><span class="meta">Loading…</span></div>
+<script type="module">
+  import { App } from "https://unpkg.com/@modelcontextprotocol/ext-apps@1.7.5/dist/src/app-with-deps.js";
+
+  const root = document.getElementById("root");
+  const state = { data: null, error: null, mode: "inline", expanded: false, tab: "compare", stack: [], args: {} };
+  const app = new App(
+    { name: "Game Buddy entity view", version: "0.3.0" },
+    { availableDisplayModes: ["inline", "fullscreen"] }
+  );
+
+  // --- helpers ---------------------------------------------------------------
+  const h = (tag, attrs = {}, ...children) => {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === "class") el.className = v;
+      else if (k === "onclick") el.onclick = v;
+      else if (v != null) el.setAttribute(k, v);
+    }
+    for (const c of children.flat()) {
+      if (c == null || c === false) continue;
+      el.append(typeof c === "string" ? document.createTextNode(c) : c);
+    }
+    return el;
+  };
+  const textOf = (r) => (r?.content || []).filter((c) => c.type === "text").map((c) => c.text).join("\n");
+  const kindLabel = (k) => (k || "").replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const initial = (e) => (e.name || e.key || "?").trim().charAt(0).toUpperCase();
+  const lineCount = (blocks) => (blocks || []).reduce((n, b) => n + (b.lines || []).length + (b.lines_cut || 0), 0);
+  const connCount = (c) => !c ? 0 : [...(c.references || []), ...(c.referenced_by || [])].reduce((n, g) => n + (g.count || 0), 0);
+  // modifier rows: effect lines that carry label/value (depth 0), with their block
+  const modRows = (e) => (e.effects || []).flatMap((b) => (b.lines || []).filter((l) => l.label != null && (l.depth || 0) === 0).map((l) => ({ ...l, block: b.title })));
+  const plainEffectBlocks = (e) => (e.effects || []).filter((b) => (b.lines || []).some((l) => l.label == null));
+  const toneClass = (t) => t === "good" ? "good" : t === "bad" ? "bad" : "";
+  const isGroup = (text) => /:$/.test(text);
+
+  // --- theme: fonts, colors and textures the game files declare ------------------
+  const asset = (path) => (path && state.data?.assets?.[path]) || null;
+  const applyTheme = (d) => {
+    const t = d?.theme;
+    if (!t) return;
+    const s = document.documentElement.style;
+    const set = (name, v) => { if (v) s.setProperty(name, v); };
+    const c = t.colors || {}, x = t.text || {};
+    set("--panel", c.panel); set("--glow", c.glow || c.panel); set("--box-tint", c.box || c.frame);
+    set("--frame", c.frame); set("--frame-hi", x.link); set("--gold", x.title); set("--title", x.text); set("--text", x.text);
+    set("--muted", x.muted); set("--blue", x.concept); set("--blue-2", x.muted); set("--good", x.good); set("--bad", x.bad);
+    const fams = [t.fonts?.body, t.fonts?.heading].filter((f, i, arr) => f && arr.indexOf(f) === i);
+    if (fams.length && !document.getElementById("theme-fonts")) {
+      const q = fams.map((f) => `family=${encodeURIComponent(f).replace(/%20/g, "+")}:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600`).join("&");
+      document.head.append(h("link", { id: "theme-fonts", rel: "stylesheet", href: `https://fonts.googleapis.com/css2?${q}&display=swap` }));
+    }
+    if (t.fonts?.body) set("--serif", `"${t.fonts.body}", "Iowan Old Style", Palatino, Georgia, serif`);
+    const tex = t.textures || {};
+    const frame = tex.frame && asset(tex.frame.asset);
+    document.body.classList.toggle("themed", !!frame);
+    if (frame) {
+      set("--frame-img", `url("${frame}")`);
+      set("--frame-slice", String(tex.frame.slice || 10));
+      set("--frame-width", `${(tex.frame.slice || 10) / (tex.frame.density || 1)}px`);
+    }
+  };
+
+  // --- pieces ----------------------------------------------------------------
+  const tile = (e, small) => {
+    const src = asset(e.icon);
+    return h("div", { class: `tile ${small ? "small" : ""} ${src ? "img" : ""}` }, src ? h("img", { src, alt: "" }) : initial(e));
+  };
+  const labelCell = (r) => {
+    const src = asset(r.icon);
+    return h("span", { class: "lab" }, src ? h("img", { class: "mi", src, alt: "" }) : null, r.label);
+  };
+  const head = (e, small) =>
+    h("div", { class: "head" },
+      tile(e, small),
+      h("div", { style: "min-width:0" },
+        h("h1", {}, e.name),
+        h("div", { class: "sub" }, kindLabel(e.kind), h("span", { class: "key" }, e.key), e.dlc ? h("span", { class: "key" }, `DLC ${e.dlc}`) : null)));
+
+  const headline = (e, max) => {
+    const rows = modRows(e).slice(0, max);
+    return rows.length ? h("div", { class: "headline" }, rows.map((r) =>
+      h("div", { class: "num" }, h("div", { class: `v ${toneClass(r.tone)}` }, r.value), h("div", { class: "l", title: r.label }, r.label)))) : null;
+  };
+
+  const modifierBox = (e) => {
+    const rows = modRows(e);
+    if (!rows.length) return null;
+    const groups = [...new Set(rows.map((r) => r.block))];
+    return h("div", { class: "box" },
+      h("div", { class: "box-title" }, "Modifiers", groups.length > 1 ? h("small", {}, groups.join(" · ")) : null),
+      groups.map((g) => h("div", { class: "blk" },
+        groups.length > 1 ? h("div", { class: "blk-title" }, g) : null,
+        h("ul", { class: "rows" }, rows.filter((r) => r.block === g).map((r) =>
+          h("li", {}, labelCell(r), h("span", { class: `val ${toneClass(r.tone)}` }, r.value)))))));
+  };
+
+  const lines = (ls) =>
+    h("ul", { class: "lines" }, (ls || []).map((l) =>
+      h("li", { class: isGroup(l.text) ? "group" : "", style: `padding-left:${(l.depth || 0) * 14}px` }, l.text)));
+
+  const blockBox = (title, blocks) => {
+    if (!blocks?.length) return null;
+    return h("div", { class: "box" },
+      h("div", { class: "box-title" }, title, h("small", {}, `${lineCount(blocks)} line${lineCount(blocks) === 1 ? "" : "s"}`)),
+      blocks.map((b) => h("div", { class: "blk" },
+        blocks.length > 1 || b.title !== title ? h("div", { class: "blk-title" }, b.title) : null,
+        lines(b.lines),
+        b.lines_cut ? h("div", { class: "notice" }, `… ${b.lines_cut} more lines in the entity document`) : null)));
+  };
+
+  const descBox = (e, clamp) => {
+    if (!e.description && !(e.texts || []).length) return null;
+    return h("div", { class: "box" },
+      e.description ? h("div", { class: `desc ${clamp ? "clamp clamp-3" : ""}` }, e.description) : null,
+      clamp ? null : (e.texts || []).map((t) => h("div", { class: "desc", style: "margin-top:6px" }, h("b", {}, `${t.label}: `), t.text)));
+  };
+
+  const connectionGroup = (label, g, clickable) =>
+    h("div", { class: "blk" },
+      h("div", { class: "blk-title" }, `${label} ${kindLabel(g.kind)} (${g.count})`),
+      h("div", { class: "chips" },
+        (g.items || []).map((it) => {
+          const text = it.name && it.name !== it.key ? it.name : it.key;
+          return clickable
+            ? h("button", { class: "chip", title: `${g.kind}/${it.key}`, onclick: () => open(`${g.kind}/${it.key}`) }, text)
+            : h("span", { class: "chip", title: `${g.kind}/${it.key}` }, text);
+        }),
+        g.count > (g.items || []).length ? h("span", { class: "chip" }, `… ${g.count - (g.items || []).length} more`) : null));
+
+  const connectionsBox = (c, clickable) =>
+    !c ? null : h("div", { class: "box" },
+      h("div", { class: "box-title" }, "Connections"),
+      (c.references || []).map((g) => connectionGroup("References", g, clickable)),
+      (c.referenced_by || []).map((g) => connectionGroup("Referenced by", g, clickable)));
+
+  const facts = (e) => [
+    lineCount(e.conditions) ? `${lineCount(e.conditions)} condition line${lineCount(e.conditions) === 1 ? "" : "s"}` : null,
+    connCount(e.connections) ? `${connCount(e.connections)} connections` : null,
+  ].filter(Boolean).join(" · ");
+
+  const panel = (...children) => h("div", { class: "panel" }, h("div", { class: "frame-top" }), ...children);
+
+  // --- inline: one card, or a carousel -----------------------------------------
+  const inlineCard = (e) => {
+    if (e.markdown) return [head(e), h("pre", { class: "clamp clamp-3", style: "margin-top:10px" }, e.markdown), foot("", "Details")];
+    return [head(e), headline(e, 3), descBox(e, true), foot(facts(e), "Details")];
+  };
+
+  const foot = (meta, label) =>
+    h("div", { class: "foot" }, h("span", { class: "meta" }, meta), h("button", { class: "gbtn", onclick: () => setMode("fullscreen") }, label));
+
+  const carousel = (es) => [
+    h("div", { class: "carousel" }, es.map((e) =>
+      h("div", { class: "panel card" }, h("div", { class: "frame-top" }),
+        head(e, true),
+        e.markdown ? null : headline(e, 2),
+        e.description ? h("div", { class: "desc clamp clamp-2", style: "margin-top:8px;font-size:13px" }, e.description) : null))),
+    foot(`${es.length} entities`, "Compare"),
+  ];
+
+  // --- fullscreen: full document, or compare table + per-entity tabs -----------
+  const fullView = (e) => {
+    if (e.markdown) return [head(e), h("pre", { style: "margin-top:10px" }, e.markdown)];
+    return [
+      head(e),
+      headline(e, 4),
+      modifierBox(e),
+      blockBox("Effects", plainEffectBlocks(e)),
+      blockBox("Conditions", e.conditions),
+      descBox(e, false),
+      e.properties?.length ? h("div", { class: "box" }, h("div", { class: "box-title" }, "Properties"), lines(e.properties), e.properties_cut ? h("div", { class: "notice" }, `… ${e.properties_cut} more in the entity document`) : null) : null,
+      connectionsBox(e.connections, true),
+      e.script ? h("div", { class: "box" }, h("div", { class: "box-title" }, "Script"), h("pre", {}, e.script)) : null,
+      h("div", { class: "source" }, `${e.game || ""} ${e.version || ""} · ${e.source || ""}`),
+    ];
+  };
+
+  const compareTable = (es) => {
+    const row = (label, cell) => h("tr", {}, h("th", { class: "row" }, label), es.map((e) => h("td", {}, cell(e))));
+    const rowsList = (e) => { const rs = modRows(e); return rs.length ? h("ul", { class: "rows" }, rs.map((r) => h("li", {}, labelCell(r), h("span", { class: `val ${toneClass(r.tone)}` }, r.value)))) : h("span", { class: "meta" }, "none"); };
+    return h("div", { class: "compare-wrap" },
+      h("table", { class: "compare" },
+        h("thead", {}, h("tr", {}, h("th", { class: "row" }, ""), es.map((e) => h("th", {}, asset(e.icon) ? h("img", { class: "mi", src: asset(e.icon), alt: "" }) : null, e.name, h("div", { class: "sub", style: "font-size:12px;font-weight:400" }, kindLabel(e.kind)))))),
+        h("tbody", {},
+          row("Modifiers", rowsList),
+          row("Conditions", (e) => e.conditions?.length ? e.conditions.map((b) => h("div", { class: "blk" }, h("div", { class: "blk-title" }, b.title), lines(b.lines))) : h("span", { class: "meta" }, "none")),
+          row("Description", (e) => e.markdown ? h("span", { class: "meta" }, "(text document)") : h("span", { class: "desc" }, e.description || "")),
+          row("Properties", (e) => e.properties?.length ? lines(e.properties.slice(0, 12)) : h("span", { class: "meta" }, "none")),
+          row("Connections", (e) => connectionsBox(e.connections, true) || h("span", { class: "meta" }, "none")))));
+  };
+
+  const canFullscreen = () => { const m = app.getHostContext?.()?.availableDisplayModes; return !m || m.includes("fullscreen"); };
+
+  const fullscreen = (d) => {
+    const es = d.entities;
+    const tabs = es.length > 1
+      ? h("div", { class: "tabs" },
+          h("button", { class: `tab ${state.tab === "compare" ? "active" : ""}`, onclick: () => { state.tab = "compare"; render(); } }, "Compare"),
+          es.map((e, i) => h("button", { class: `tab ${state.tab === i ? "active" : ""}`, onclick: () => { state.tab = i; render(); } }, e.name)))
+      : null;
+    const body = es.length > 1 && state.tab === "compare" ? [compareTable(es)] : fullView(es[es.length > 1 ? state.tab : 0]);
+    return [
+      h("div", { class: "topbar" },
+        state.stack.length ? h("button", { class: "gbtn quiet", onclick: back }, "← Back") : null,
+        h("span", { class: "meta" }, `${d.game} ${d.version}`),
+        h("span", { class: "spacer" }),
+        h("button", { class: "gbtn quiet", onclick: () => { state.expanded = false; setMode("inline"); } }, state.mode === "fullscreen" ? "Close" : "Collapse")),
+      tabs,
+      ...body,
+    ];
+  };
+
+  // --- navigation ----------------------------------------------------------------
+  async function open(key) {
+    try {
+      const r = await app.callServerTool({ name: "game_show", arguments: { keys: [key], ...state.args } });
+      if (r.isError || !r.structuredContent) { state.error = textOf(r) || `could not open ${key}`; render(); return; }
+      state.stack.push({ data: state.data, tab: state.tab });
+      state.data = r.structuredContent; state.tab = "compare"; state.error = null;
+      window.scrollTo(0, 0); render();
+    } catch (err) { state.error = String(err); render(); }
+  }
+  function back() {
+    const prev = state.stack.pop();
+    if (prev) { state.data = prev.data; state.tab = prev.tab; render(); }
+  }
+  async function setMode(mode) {
+    if (mode === "fullscreen" && !canFullscreen()) { state.expanded = true; render(); return; }
+    try {
+      const r = await app.requestDisplayMode({ mode });
+      state.mode = r?.mode || mode;
+      if (mode === "fullscreen" && state.mode !== "fullscreen") state.expanded = true;
+    } catch (_) { if (mode === "fullscreen") state.expanded = true; }
+    render();
+  }
+
+  // --- render --------------------------------------------------------------------
+  function render() {
+    const ctx = app.getHostContext?.();
+    const insets = ctx?.safeAreaInsets;
+    const full = state.mode === "fullscreen";
+    document.body.classList.toggle("fullscreen", full);
+    document.body.style.padding = full && insets
+      ? `${12 + insets.top}px ${12 + insets.right}px ${12 + insets.bottom}px ${12 + insets.left}px` : "";
+    const d = state.data;
+    const notice = (msg) => h("div", { class: "notice" }, msg);
+    if (!d) { root.replaceChildren(h("div", { class: "frame-top" }), h("span", { class: "meta" }, state.error || "Loading…")); return; }
+    applyTheme(d);
+    const view = full || state.expanded ? fullscreen(d) : d.entities.length === 1 ? inlineCard(d.entities[0]) : carousel(d.entities);
+    // replaceChildren turns a null into the text "null", so filter first
+    root.replaceChildren(...[
+      h("div", { class: "frame-top" }),
+      ...view,
+      state.error ? notice(state.error) : null,
+      d.missing?.length ? notice(`Not found: ${d.missing.join(", ")}`) : null,
+    ].filter(Boolean));
+  }
+
+  // --- wiring: handlers before connect, so the first notifications are not missed ---
+  app.ontoolinput = ({ arguments: args }) => {
+    if (args) state.args = { ...(args.game ? { game: args.game } : {}), ...(args.version ? { version: args.version } : {}) };
+  };
+  app.ontoolresult = (result) => {
+    state.data = result.structuredContent || null;
+    state.error = result.isError ? textOf(result) : (state.data ? null : textOf(result) || "No data.");
+    state.stack = []; state.tab = "compare"; state.expanded = false;
+    render();
+  };
+  app.onhostcontextchanged = (ctx) => { if (ctx?.displayMode) state.mode = ctx.displayMode; render(); };
+  await app.connect();
+  const ctx = app.getHostContext();
+  if (ctx?.displayMode) state.mode = ctx.displayMode;
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<Layouts.site flash={@flash} header_theme="dark">
+  <%!-- Hero: a full-width night band that starts at the top, under the header --%>
+  <.night_panel
+    id="hero"
+    bleed
+    data-header-dark
+    class="-mt-16 pb-28 pt-28 sm:pb-36 sm:pt-36"
+  >
+    <.container>
+      <div class="grid items-center gap-12 lg:grid-cols-[1fr_1.1fr]">
+        <div>
+          <.eyebrow on_dark class="mb-5">Game knowledge, straight from the source</.eyebrow>
+          <h1 class="text-balance text-h1 text-white sm:text-[4.25rem] sm:leading-[1.04]">
+            Know the game like <span class="text-brand-soft">it knows itself.</span>
+          </h1>
+          <p class="mt-6 max-w-lg text-pretty text-lead text-white/75">
+            Quiv gives players and AI assistants exact answers about a game's rules, mechanics
+            and content, taken straight from the game's own files. No wikis, no guesses.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <.button size="lg" href="#how-it-works" icon="hero-link">
+              Connect your assistant
+            </.button>
+            <.button size="lg" variant="outline" href="#games" icon="hero-squares-2x2">
+              See the games
+            </.button>
+          </div>
+          <div class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-white/85">
+            <.check_item on_dark>Works with Claude and ChatGPT</.check_item>
+            <.check_item on_dark>Updated with every patch</.check_item>
+            <.check_item on_dark>Every fact cites its source</.check_item>
+          </div>
+        </div>
+
+        <%!-- The example chats: a chip per game, then a stage of fixed height that
+             cycles through separate exchanges (chatDemo in site.js) --%>
+        <div id="demo" class="group/demo w-full" data-chat-demo>
+          <div
+            id="hero-games"
+            role="tablist"
+            aria-label="Pick a game"
+            class="mb-4 flex flex-wrap gap-2"
+          >
+            <button
+              :for={{entry, i} <- Enum.with_index(@games)}
+              type="button"
+              role="tab"
+              data-chat-tab={entry.game.slug}
+              aria-selected={to_string(i == 0)}
+              aria-controls="hero-chat"
+              title={entry.game.name}
+              class="inline-flex items-center gap-2 rounded-full bg-white/10 py-1.5 pl-1.5 pr-3.5 text-sm font-semibold text-white/80 ring-1 ring-white/10 transition hover:bg-white/15 hover:text-white aria-selected:bg-white aria-selected:text-night aria-selected:ring-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/30"
+            >
+              <.game_icon slug={entry.game.slug} image={entry.image} size="sm" />
+              <span>{chip_label(entry.game)}</span>
+              <span
+                :if={!entry.version}
+                class="rounded-full bg-sun px-1.5 py-px text-[10px] font-bold uppercase tracking-wide text-ink"
+              >
+                soon
+              </span>
+            </button>
+          </div>
+
+          <div
+            :if={@chats != []}
+            id="hero-chat"
+            role="tabpanel"
+            class="rounded-3xl bg-night/80 p-5 shadow-lg ring-1 ring-white/10 backdrop-blur-md sm:p-6"
+          >
+            <div class="mb-5 flex items-center gap-2 text-xs text-white/60">
+              <.mark size={24} />
+              <span class="font-semibold text-white">Quiv</span>
+              <span class="hidden sm:inline">in your assistant</span>
+            </div>
+
+            <%!-- Fixed height: the tallest exchange at each width fits (measured at
+                 360, 390, 640, 1024 and 1440 px), so the page never reflows while the
+                 exchanges change. Layers crossfade. --%>
+            <div
+              class="relative h-[30rem] overflow-hidden min-[400px]:h-[26rem] sm:h-[22rem] lg:h-[24rem]"
+              data-chat-stage
+            >
+              <div
+                :for={item <- @chats}
+                data-chat
+                data-chat-game={item.entry.game.slug}
+                data-active={item.index == 0}
+                aria-hidden={to_string(item.index != 0)}
+                class="absolute inset-0 flex flex-col gap-4 opacity-0 transition-opacity duration-500 data-active:opacity-100"
+              >
+                <div
+                  data-chat-step
+                  data-shown={item.index == 0}
+                  class="translate-y-2 opacity-0 transition duration-500 data-shown:translate-y-0 data-shown:opacity-100 motion-reduce:transition-none"
+                >
+                  <.chat_bubble from="user" on_dark>{item.chat.question}</.chat_bubble>
+                </div>
+                <div
+                  data-chat-typing
+                  class="hidden items-start gap-3 data-shown:flex"
+                  aria-hidden="true"
+                >
+                  <.mark size={32} />
+                  <div class="flex items-center gap-1 rounded-2xl rounded-tl-md bg-white/10 px-4 py-4">
+                    <span class="size-1.5 rounded-full bg-white/70 motion-safe:animate-bounce">
+                    </span>
+                    <span class="size-1.5 rounded-full bg-white/70 motion-safe:animate-bounce [animation-delay:150ms]">
+                    </span>
+                    <span class="size-1.5 rounded-full bg-white/70 motion-safe:animate-bounce [animation-delay:300ms]">
+                    </span>
+                  </div>
+                </div>
+                <div
+                  data-chat-step
+                  data-shown={item.index == 0}
+                  class="translate-y-2 opacity-0 transition duration-500 data-shown:translate-y-0 data-shown:opacity-100 motion-reduce:transition-none"
+                >
+                  <.chat_bubble from="buddy" on_dark>
+                    {item.chat.answer}
+                    <div
+                      :if={item.chat[:card]}
+                      class="mt-3 rounded-2xl bg-night p-4 ring-1 ring-white/10"
+                    >
+                      <div class="flex items-center gap-2">
+                        <.icon_tile icon={item.chat.card.icon} tone="soft" size="sm" />
+                        <div>
+                          <p class="text-sm font-bold text-white">{item.chat.card.title}</p>
+                          <p class="text-[11px] text-white/50">{item.chat.card.kind}</p>
+                        </div>
+                      </div>
+                      <ul class="mt-3 space-y-1.5 text-xs text-white/80">
+                        <li
+                          :for={row <- item.chat.card.rows}
+                          class="flex items-center justify-between gap-3"
+                        >
+                          <span class="flex items-center gap-2">
+                            <.icon
+                              :if={!row[:value]}
+                              name="hero-check-circle-solid"
+                              class="size-4 shrink-0 text-lime"
+                            />
+                            {row.text}
+                          </span>
+                          <span
+                            :if={row[:value]}
+                            class={["shrink-0 font-bold", row_tone(row[:tone])]}
+                          >
+                            {row.value}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </.chat_bubble>
+                </div>
+              </div>
+            </div>
+
+            <%!-- One dot per exchange of the current game; the active one fills over the dwell --%>
+            <div class="mt-4 flex items-center justify-center gap-1.5">
+              <button
+                :for={item <- @chats}
+                type="button"
+                data-chat-dot={item.index}
+                data-chat-game={item.entry.game.slug}
+                data-active={item.index == 0}
+                aria-label={"Example #{item.n} of #{item.count}"}
+                class={[
+                  "group/dot relative h-1.5 w-1.5 overflow-hidden rounded-full bg-white/25 transition-all duration-300 hover:bg-white/50 data-active:w-7",
+                  item.entry.game.slug != hd(@chats).entry.game.slug && "hidden"
+                ]}
+              >
+                <span
+                  class="absolute inset-0 origin-left scale-x-0 rounded-full bg-white group-data-active/dot:motion-safe:animate-dwell group-data-active/dot:motion-reduce:scale-x-100 group-data-paused/demo:[animation-play-state:paused]"
+                  aria-hidden="true"
+                >
+                </span>
+              </button>
+            </div>
+          </div>
+          <p :if={@games == []} class="text-sm text-white/70">No game indexed yet.</p>
+        </div>
+      </div>
+    </.container>
+  </.night_panel>
+
+  <%!-- Numbers from the default snapshot, overlapping the hero's lower edge --%>
+  <.container :if={@featured} class="relative -mt-12 sm:-mt-14">
+    <div class="grid gap-px overflow-hidden rounded-3xl bg-line shadow-md ring-1 ring-line/80 sm:grid-cols-2 lg:grid-cols-4">
+      <div
+        :for={{label, value} <- snapshot_figures(@featured.version)}
+        class="bg-surface px-6 py-5"
+      >
+        <p class="text-h4 text-ink">{number(value)}</p>
+        <p class="mt-0.5 text-sm text-ink-soft">{label}</p>
+      </div>
+    </div>
+    <p class="mt-3 text-center text-xs text-ink-soft">
+      Indexed from <span class="inline-flex items-center gap-1 align-middle font-semibold text-ink">
+        <.game_icon
+          slug={@featured.game.slug}
+          image={@featured.image}
+          size="xs"
+        />
+        {@featured.game.name}
+      </span>, {game_meta(@featured.version)}.
+    </p>
+  </.container>
+
+  <%!-- Features --%>
+  <section id="features" class="scroll-mt-20 py-20 sm:py-24">
+    <.container class="grid gap-12 lg:grid-cols-[1fr_1.35fr] lg:items-center">
+      <.section_heading
+        eyebrow="Built for players and AI agents"
+        title="Exact knowledge for every playstyle."
+        lead="Whether you are planning the next campaign or building an agent, Quiv turns a game's script and text into documents an assistant can read, follow and quote."
+      >
+        <:actions>
+          <.button variant="secondary" href="#how-it-works" trailing_icon="hero-arrow-right">
+            See how it works
+          </.button>
+        </:actions>
+      </.section_heading>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <.feature_card
+          icon="hero-book-open"
+          tone="violet"
+          title="Mechanics and rules"
+          text="Conditions and effects written in the game's own tooltip language, with the exact numbers from the files."
+        />
+        <.feature_card
+          icon="hero-cube"
+          tone="coral"
+          title="Every entity, connected"
+          text="One document per building, law, reform, unit or event, linked to everything it references and everything that references it."
+        />
+        <.feature_card
+          icon="hero-arrow-path"
+          tone="lime"
+          title="Versioned per build"
+          text="Each ingest is a snapshot of one build. Ask about the version you play, and re-ingest when a patch lands."
+        />
+        <.feature_card
+          icon="hero-sparkles"
+          tone="sun"
+          title="Designed for AI agents"
+          text="Five MCP tools, documents instead of structures, and an intro that teaches the assistant the game's vocabulary."
+        />
+      </div>
+    </.container>
+  </section>
+
+  <%!-- Games --%>
+  <section id="games" class="scroll-mt-20 border-y border-line bg-surface py-20 sm:py-24">
+    <.container class="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:items-center">
+      <.section_heading
+        eyebrow="Supported games"
+        title="Your games, straight from their files."
+        lead="Quiv learns a game by surveying the files it ships with. A new game is an adapter, not a rewrite, and the scaling unit is the engine family."
+      />
+      <div class="grid gap-4 sm:grid-cols-2">
+        <.game_card
+          :for={entry <- @games}
+          name={entry.game.name}
+          slug={entry.game.slug}
+          status={if(entry.version, do: "live", else: "soon")}
+          meta={game_meta(entry.version)}
+          image={entry.image}
+        />
+        <div class="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-line p-5 text-center">
+          <.mascot expression="curious" class="size-16" />
+          <p class="mt-3 text-sm font-bold text-ink">Your game next?</p>
+          <p class="mt-1 text-xs text-ink-soft">The parser, ingest and tools are generic.</p>
+        </div>
+      </div>
+    </.container>
+  </section>
+
+  <%!-- Why --%>
+  <section id="why" class="scroll-mt-20 py-20 sm:py-24">
+    <.container class="grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:items-start">
+      <.section_heading
+        eyebrow="Why Quiv"
+        title="Built for a deeper game."
+        lead="The game's files are the only source of truth. Everything else follows from that one rule."
+      />
+      <div class="grid gap-4 sm:grid-cols-2">
+        <.feature_card
+          layout="row"
+          icon="hero-check-badge"
+          tone="violet"
+          title="Exact"
+          text="Numbers, conditions and effects come from the script, not from memory or a forum post."
+        />
+        <.feature_card
+          layout="row"
+          icon="hero-clock"
+          tone="lime"
+          title="Current"
+          text="A new build is ingested in about a minute and embedded from cache. Patch day is a non-event."
+        />
+        <.feature_card
+          layout="row"
+          icon="hero-document-magnifying-glass"
+          tone="coral"
+          title="Cited"
+          text="Every document ends with the file and line it came from, kept internal unless you ask."
+        />
+        <.feature_card
+          layout="row"
+          icon="hero-magnifying-glass"
+          tone="sun"
+          title="Searchable"
+          text="Full-text and embedding search, fused, across entities, localization text and shipped docs."
+        />
+        <.feature_card
+          layout="row"
+          icon="hero-squares-2x2"
+          tone="night"
+          title="Multi-game"
+          text="A generic parser, ingest and tools. A game is a small adapter that declares where things are."
+        />
+        <.feature_card
+          layout="row"
+          icon="hero-link"
+          tone="soft"
+          title="Open"
+          text="Standard MCP over HTTP. Any client that speaks it can ask; no account, no SDK."
+        />
+      </div>
+    </.container>
+  </section>
+
+  <%!-- How it works --%>
+  <section id="how-it-works" class="scroll-mt-20 border-y border-line bg-surface py-20 sm:py-24">
+    <.container>
+      <.section_heading
+        eyebrow="How it works"
+        title="Get started in a minute."
+        lead="Add the connector, ask a question, follow the keys. The server never evaluates game rules; your assistant does the reasoning on documents it can quote."
+      />
+      <div class="mt-12 grid gap-4 lg:grid-cols-3">
+        <.step_card
+          number={1}
+          title="Connect"
+          text="Add the Quiv URL as a connector in Claude, ChatGPT or any MCP client."
+        >
+          <div class="flex justify-center">
+            <img src="/images/site/island-portal.webp" alt="" class="h-44 w-auto" loading="lazy" />
+          </div>
+          <div class="mt-4 flex items-center gap-2 rounded-xl bg-muted py-1.5 pl-3 pr-1.5">
+            <code class="truncate font-mono text-xs text-ink-soft">{@mcp_url}</code>
+            <.button
+              size="sm"
+              variant="secondary"
+              class="ml-auto shrink-0"
+              data-copy={@mcp_url}
+              icon="hero-clipboard"
+            >
+              <span data-copy-label>Copy</span>
+            </.button>
+          </div>
+        </.step_card>
+        <.step_card
+          number={2}
+          title="Ask"
+          text="Ask about rules, requirements or content. The assistant searches first; nothing to set up."
+        >
+          <div class="flex justify-center">
+            <img src="/images/site/island-garden.webp" alt="" class="h-44 w-auto" loading="lazy" />
+          </div>
+          <div class="mt-4 space-y-2">
+            <div
+              :for={entry <- Enum.take(@games, 3)}
+              class={[
+                "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-semibold",
+                if(entry.version,
+                  do: "bg-lavender text-brand-deep",
+                  else: "bg-muted text-ink-soft"
+                )
+              ]}
+            >
+              <.game_icon slug={entry.game.slug} image={entry.image} size="sm" />
+              <span class="truncate">{entry.game.name}</span>
+              <.icon
+                :if={entry.version}
+                name="hero-check-circle-solid"
+                class="ml-auto size-4 shrink-0 text-brand"
+              />
+              <span :if={!entry.version} class="ml-auto text-xs font-medium">soon</span>
+            </div>
+            <div :if={@games == []} class="rounded-xl bg-muted px-3 py-2 text-sm text-ink-soft">
+              No game indexed yet.
+            </div>
+          </div>
+        </.step_card>
+        <.step_card
+          number={3}
+          title="Follow the keys"
+          text="Each document links to the entities it references. The assistant escalates through keys to the exact conditions."
+        >
+          <div class="flex justify-center">
+            <img src="/images/site/island-castle.webp" alt="" class="h-44 w-auto" loading="lazy" />
+          </div>
+          <div class="mt-4 flex flex-wrap gap-1.5">
+            <.key_chip>game_search</.key_chip>
+            <.icon name="hero-arrow-right-mini" class="size-4 self-center text-ink-faint" />
+            <.key_chip>game_entity</.key_chip>
+            <.icon name="hero-arrow-right-mini" class="size-4 self-center text-ink-faint" />
+            <.key_chip>index/kind</.key_chip>
+            <.key_chip>topic/concept</.key_chip>
+            <.key_chip>game_show</.key_chip>
+          </div>
+        </.step_card>
+      </div>
+    </.container>
+  </section>
+
+  <%!-- Platform --%>
+  <section id="platform" class="scroll-mt-20 py-20 sm:py-24">
+    <.container>
+      <.section_heading
+        eyebrow="One knowledge base, many surfaces"
+        title="MCP today. Your buddy wherever you play, next."
+        lead="The server turns game files into documents once. Every surface, from an MCP connector to an in-game overlay, reads the same knowledge."
+      />
+      <div class="mt-12 grid items-center gap-8 lg:grid-cols-[1fr_auto_1fr]">
+        <div class="space-y-2">
+          <p class="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-ink-soft">Asks</p>
+          <div
+            :for={
+              {name, icon} <- [
+                {"Claude", "hero-sparkles"},
+                {"ChatGPT", "hero-chat-bubble-left-right"},
+                {"Cursor and coding agents", "hero-code-bracket"},
+                {"Your own app", "hero-cube-transparent"}
+              ]
+            }
+            class="flex items-center gap-3 rounded-2xl bg-surface px-4 py-3 text-sm font-semibold text-ink shadow-xs ring-1 ring-line/80"
+          >
+            <.icon name={icon} class="size-5 text-brand" />
+            {name}
+          </div>
+        </div>
+        <div class="relative mx-auto flex flex-col items-center gap-3">
+          <div
+            class="absolute inset-x-[-3rem] top-1/2 hidden border-t-2 border-dashed border-line lg:block"
+            aria-hidden="true"
+          >
+          </div>
+          <div class="relative rounded-[2rem] bg-night p-6 shadow-lg">
+            <.mark size={80} />
+          </div>
+          <p class="relative text-sm font-bold text-ink">Quiv</p>
+          <p class="relative text-xs text-ink-soft">documents, search, keys</p>
+        </div>
+        <div class="space-y-2">
+          <p class="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-ink-soft">
+            Answers through
+          </p>
+          <div
+            :for={
+              {name, icon, status} <- [
+                {"MCP connector", "hero-link", "live"},
+                {"Interactive cards in the chat", "hero-rectangle-stack", "live"},
+                {"Quiv chat", "hero-chat-bubble-oval-left", "planned"},
+                {"In-game overlay", "hero-window", "planned"}
+              ]
+            }
+            class="flex items-center gap-3 rounded-2xl bg-surface px-4 py-3 text-sm font-semibold text-ink shadow-xs ring-1 ring-line/80"
+          >
+            <.icon name={icon} class="size-5 text-brand" />
+            {name}
+            <.pill
+              tone={if(status == "live", do: "lime", else: "neutral")}
+              size="sm"
+              dot
+              class="ml-auto"
+            >
+              {status}
+            </.pill>
+          </div>
+        </div>
+      </div>
+    </.container>
+  </section>
+
+  <%!-- Call to action: a full-width band straight onto the footer --%>
+  <.cta_banner
+    bleed
+    data-header-dark
+    eyebrow="Ready to explore?"
+    title="Bring Quiv into your assistant."
+    text="Connect the server, ask the question you have been meaning to ask, and get the answer the game itself would give."
+  >
+    <:actions>
+      <.button variant="light" size="lg" href="#how-it-works" icon="hero-link">
+        Connect your assistant
+      </.button>
+      <.button variant="outline" size="lg" href="/dashboard" icon="hero-signal">
+        Open the dashboard
+      </.button>
+    </:actions>
+  </.cta_banner>
+</Layouts.site>
