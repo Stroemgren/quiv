@@ -4,7 +4,8 @@ An MCP server that turns an AI assistant into a game buddy. Every fact it serves
 extracted directly from a game's own files: no wikis, no guides. First game:
 Europa Universalis V.
 
-- Plan: `docs/PLAN.md` · EU5 file survey: `docs/eu5-survey.md`
+- Plan: `docs/PLAN.md` · EU5 file survey: `docs/eu5-survey.md` · Real player questions from
+  Steam and CivFanatics (EU5, HOI4, Civ 7), for examples and tests: `docs/community-questions.md`
 - Stack: Elixir 1.19 / Phoenix 1.8, Postgres 17 + pgvector, anubis_mcp (Streamable HTTP),
   Bumblebee for local embeddings (EMLX on the Metal GPU on macOS, EXLA elsewhere).
 

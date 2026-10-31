@@ -1,7 +1,9 @@
 # Game Buddy
 
 See `README.md` for how to run things, `docs/PLAN.md` for the plan and decisions,
-`docs/eu5-survey.md` for what the EU5 files look like. Phoenix conventions: `AGENTS.md`.
+`docs/eu5-survey.md` for what the EU5 files look like, `docs/community-questions.md` for real
+player questions (quoted, dated, with URLs) to use as examples and client tests. Phoenix
+conventions: `AGENTS.md`.
 
 Rules of the project:
 - Only the game's own files are sources of truth. Never pull facts from wikis or guides
